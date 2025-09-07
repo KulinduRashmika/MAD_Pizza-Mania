@@ -39,6 +39,20 @@ public class CustomerDashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_dashboard);
 
+        RecyclerView bannerRecyclerView = findViewById(R.id.bannerRecyclerView);
+        bannerRecyclerView.setLayoutManager(
+                new GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
+        );
+
+        ArrayList<Banner> banners = new ArrayList<>();
+        banners.add(new Banner("50% OFF on Pizzas!", R.drawable.offer1));
+        banners.add(new Banner("Buy 1 Get 1 Free!", R.drawable.offer2));
+        banners.add(new Banner("Free Drink with Every Order", R.drawable.offer3));
+
+        BannerAdapter bannerAdapter = new BannerAdapter(this, banners);
+        bannerRecyclerView.setAdapter(bannerAdapter);
+
+
         recyclerView = findViewById(R.id.recyclerViewProducts);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 columns
 

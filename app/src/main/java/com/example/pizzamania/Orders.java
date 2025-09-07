@@ -78,11 +78,17 @@ public class Orders extends AppCompatActivity {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String orderInfo = "Order #" + cursor.getInt(cursor.getColumnIndexOrThrow("order_ID"))
-                        + "\nItems: " + cursor.getString(cursor.getColumnIndexOrThrow("items"))
-                        + "\nTotal: Rs. " + cursor.getDouble(cursor.getColumnIndexOrThrow("totalPrice"))
-                        + "\nDate: " + cursor.getString(cursor.getColumnIndexOrThrow("orderDate"))
-                        + "\nStatus: " + cursor.getString(cursor.getColumnIndexOrThrow("status"));
+                String orderInfo =
+                        "Order #" + cursor.getInt(cursor.getColumnIndexOrThrow("order_ID")) +
+                                "\nItems: " + cursor.getString(cursor.getColumnIndexOrThrow("items")) +
+                                "\nTotal: Rs. " + cursor.getDouble(cursor.getColumnIndexOrThrow("totalPrice")) +
+                                "\nDate: " + cursor.getString(cursor.getColumnIndexOrThrow("orderDate")) +
+                                "\nStatus: " + cursor.getString(cursor.getColumnIndexOrThrow("status")) +
+                                "\n\n👤 Customer Details:" +
+                                "\nName: " + cursor.getString(cursor.getColumnIndexOrThrow("customer_name")) +
+                                "\nEmail: " + cursor.getString(cursor.getColumnIndexOrThrow("email")) +
+                                "\nPhone: " + cursor.getString(cursor.getColumnIndexOrThrow("phone")) +
+                                "\nAddress: " + cursor.getString(cursor.getColumnIndexOrThrow("address"));
                 ordersList.add(orderInfo);
             }
             cursor.close();
@@ -92,4 +98,5 @@ public class Orders extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, ordersList);
         listViewOrders.setAdapter(adapter);
     }
+
 }

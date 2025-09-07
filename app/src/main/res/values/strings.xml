@@ -3,4 +3,15 @@
     <string name="select_branch">Select Branch</string>
     <string name="btnPlaceOrder">PAY</string>
 
+    <string-array name="order_status_options">
+        <item>Paid</item>
+        <item>Cancelled</item>
+        <item>Pending</item>
+        <item>Failed</item>
+    </string-array>
+
+    <string name="banner_image">Banner Image</string>
+
 </resources>
+
+

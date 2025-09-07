@@ -16,6 +16,16 @@
         android:background="#FFFFFF"
         android:elevation="4dp"/>
 
+    <!-- 🔹 Banner RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bannerRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        android:overScrollMode="never" />
+
     <!-- 🔎 Search Bar -->
     <EditText
         android:id="@+id/searchBar"
@@ -27,6 +37,8 @@
         android:background="@drawable/search_bar_bg"
         android:layout_margin="12dp"
         android:elevation="2dp"/>
+
+
 
     <!-- Spinner for Branch Selection -->
     <Spinner
@@ -54,5 +66,9 @@
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"/>
+
+
+
+
 
 </LinearLayout>
