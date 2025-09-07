@@ -26,7 +26,7 @@ public class AdminDashboard extends AppCompatActivity {
         // Button actions
         btnAddProduct.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ProductAddActivity.class)));
         btnViewProducts.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ProductList.class)));
-//        btnViewOrders.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ViewOrdersActivity.class)));
+        btnViewOrders.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, AdminOrdersActivity.class)));
 //        btnUpdateDelivery.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, UpdateDeliveryActivity.class)));
 //        btnViewDeliveries.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ViewDeliveriesActivity.class)));
     }

@@ -10,7 +10,7 @@ import android.util.Log;
 public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "PizzaMania.db";
-    private static final int DB_VERSION = 6; // bump version to reset schema if needed
+    private static final int DB_VERSION = 6;
 
     public SqliteHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -56,6 +56,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(customer_ID) REFERENCES customer(customer_ID), " +
                 "FOREIGN KEY(product_ID) REFERENCES product(product_ID))";
         db.execSQL(cartTable);
+
         // ---------------- Orders ----------------
         String ordersTable = "CREATE TABLE orders (" +
                 "order_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -66,7 +67,6 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 "status TEXT, " +
                 "FOREIGN KEY(customer_ID) REFERENCES customer(customer_ID))";
         db.execSQL(ordersTable);
-
     }
 
     @Override
@@ -104,10 +104,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         values.put("address", address);
         values.put("phone", phone);
         long result = db.insert("customer", null, values);
-
-        if (result == -1) {
-            Log.e("DB_ERROR", "❌ Failed to insert customer: " + email);
-        }
+        if (result == -1) Log.e("DB_ERROR", "Failed to insert customer: " + email);
         return result;
     }
 
@@ -144,20 +141,10 @@ public class SqliteHelper extends SQLiteOpenHelper {
         values.put("largePrice", largePrice);
         values.put("image", image);
         values.put("branch", branch);
-
         long result = db.insert("product", null, values);
-        if (result == -1) {
-            Log.e("DB_ERROR", "❌ Failed to insert product: " + name);
-        } else {
-            Log.d("DB_SUCCESS", "✅ Inserted product [" + name + "] ID: " + result);
-        }
+        if (result == -1) Log.e("DB_ERROR", "Failed to insert product: " + name);
+        else Log.d("DB_SUCCESS", "Inserted product [" + name + "] ID: " + result);
         return result;
-    }
-
-    @Deprecated
-    public long insertProduct(String name, String description, double smallPrice, double mediumPrice,
-                              double largePrice, byte[] image) {
-        return insertProduct(name, description, smallPrice, mediumPrice, largePrice, image, "Colombo");
     }
 
     public Cursor getProductsByBranch(String branch) {
@@ -226,11 +213,13 @@ public class SqliteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("cart", "customer_ID=?", new String[]{String.valueOf(customerId)});
     }
+
     public int deleteCartItem(int cartId) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("cart", "cart_ID=?", new String[]{String.valueOf(cartId)});
     }
-    // Save order
+
+    // ---------------- Orders ----------------
     public long insertOrder(int customerId, String items, double totalPrice, String date, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -242,19 +231,64 @@ public class SqliteHelper extends SQLiteOpenHelper {
         return db.insert("orders", null, values);
     }
 
-    // Get all orders of a customer
     public Cursor getOrdersByCustomer(int customerId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM orders WHERE customer_ID=? ORDER BY orderDate DESC",
-                new String[]{String.valueOf(customerId)});
+        return db.rawQuery(
+                "SELECT o.order_ID, o.items, o.totalPrice, o.orderDate, o.status, " +
+                        "c.customer_name, c.email, c.phone, c.address " +
+                        "FROM orders o " +
+                        "JOIN customer c ON o.customer_ID = c.customer_ID " +
+                        "WHERE o.customer_ID=? " +
+                        "ORDER BY o.orderDate DESC",
+                new String[]{String.valueOf(customerId)}
+        );
+    }
+    public Cursor getOrdersByStatus(String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT o.order_ID AS _id, " +
+                        "c.customer_name, " +
+                        "c.email, " +
+                        "c.phone, " +
+                        "c.address, " +
+                        "o.items, " +
+                        "o.totalPrice, " +
+                        "o.orderDate, " +
+                        "o.status " +
+                        "FROM orders o " +
+                        "JOIN customer c ON o.customer_ID = c.customer_ID " +
+                        "WHERE o.status=? " +
+                        "ORDER BY o.orderDate DESC",
+                new String[]{status}
+        );
     }
 
-    // Update order status by order ID
+
+
     public int updateOrderStatus(long orderId, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("status", status);
         return db.update("orders", values, "order_ID=?", new String[]{String.valueOf(orderId)});
     }
+    public Cursor getAllOrders() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT o.order_ID AS _id, " +
+                        "c.customer_name, " +
+                        "c.email, " +
+                        "c.phone, " +
+                        "c.address, " +
+                        "o.items, " +
+                        "o.totalPrice, " +
+                        "o.orderDate, " +
+                        "o.status " +
+                        "FROM orders o " +
+                        "JOIN customer c ON o.customer_ID = c.customer_ID " +
+                        "ORDER BY o.orderDate DESC",
+                null
+        );
+    }
+
 
 }

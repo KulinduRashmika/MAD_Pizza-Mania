@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.pizzamania">
 
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Permissions: Must be outside <application> -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Permissions: Must be outside <application> -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
@@ -20,7 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PizzaMania"
         tools:targetApi="31">
-
+        <activity
+            android:name=".AdminOrdersActivity"
+            android:exported="false" />
         <!-- Customer Activities -->
         <activity
             android:name=".CartItem"
@@ -51,9 +50,7 @@
             android:exported="false" />
         <activity
             android:name=".UserLogin"
-            android:exported="true" />
-
-        <!-- Admin Activities -->
+            android:exported="true" /> <!-- Admin Activities -->
         <activity
             android:name=".ProductList"
             android:exported="false" />
@@ -65,21 +62,19 @@
             android:exported="false" />
         <activity
             android:name=".ProductAddActivity"
-            android:exported="false" />
-
-        <!-- Launcher / Main Activities -->
+            android:exported="false" /> <!-- Launcher / Main Activities -->
         <activity
             android:name=".Selection"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-
     </application>
 
 </manifest>
