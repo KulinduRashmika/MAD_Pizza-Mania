@@ -2,58 +2,61 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9F9F9"
+    android:background="@drawable/back"
     android:padding="16dp">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:padding="16dp">
 
         <!-- Header -->
-        <TextView
-            android:id="@+id/txtAdminTitle"
-            android:text="Admin Dashboard"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:layout_marginBottom="24dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <!-- Add Product -->
+        <TextView
+            android:id="@+id/txtAdminTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Admin Dashboard"
+            android:textColor="@color/pizza_white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/btnAddProduct"
-            android:text="➕ Add Product"
-            android:textAllCaps="false"
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="#bab6b7"
+            android:text="Add Product"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <!-- View Products -->
         <Button
             android:id="@+id/btnViewProducts"
-            android:text="👀 View Products"
-            android:textAllCaps="false"
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="#bab6b7"
+            android:text="View Products"
+            android:textAllCaps="false"
+            android:textColor="@color/black" />
 
         <!-- View Orders -->
         <Button
             android:id="@+id/btnViewOrders"
-            android:text="📦 View Orders"
-            android:textAllCaps="false"
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="#bab6b7"
+            android:text="View Orders"
+            android:textAllCaps="false"
+            android:textColor="@color/black" />
 
         <!-- View Deliveries (optional feature hook) -->
 <!--        <Button-->
@@ -69,22 +72,22 @@
         <!-- Show Map -->
         <Button
             android:id="@+id/showMap"
-            android:text="📍 Show Locations (Map)"
-            android:textAllCaps="false"
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#607D8B"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="#bab6b7"
+            android:text="Show Locations (Map)"
+            android:textAllCaps="false"
+            android:textColor="@color/black" />
 
         <!-- Logout -->
         <Button
             android:id="@+id/btnLogout"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:text="Logout"
             android:layout_marginTop="16dp"
             android:backgroundTint="#D32F2F"
-            android:textColor="#FFFFFF"/>
+            android:text="Logout"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </ScrollView>

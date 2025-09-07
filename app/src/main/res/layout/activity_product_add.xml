@@ -1,87 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="20dp"
+    android:fillViewport="true">
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add New Product"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Product Name -->
         <EditText
             android:id="@+id/editName"
             android:hint="Product name (e.g., Margherita)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="50dp"
+            android:padding="12dp"
+            android:background="@drawable/edittext_rounded"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:inputType="textCapWords"/>
 
+        <!-- Description -->
         <EditText
             android:id="@+id/editDesc"
             android:hint="Description (optional)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="100dp"
+            android:padding="12dp"
+            android:gravity="top"
+            android:background="@drawable/edittext_rounded"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:inputType="textMultiLine"/>
 
+        <!-- Prices -->
         <EditText
             android:id="@+id/editSmallPrice"
             android:hint="Small Price (Rs)"
-            android:inputType="numberDecimal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="50dp"
+            android:padding="12dp"
+            android:background="@drawable/edittext_rounded"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/editMediumPrice"
             android:hint="Medium Price (Rs)"
-            android:inputType="numberDecimal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="50dp"
+            android:padding="12dp"
+            android:background="@drawable/edittext_rounded"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/editLargePrice"
             android:hint="Large Price (Rs)"
-            android:inputType="numberDecimal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="50dp"
+            android:padding="12dp"
+            android:background="@drawable/edittext_rounded"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:inputType="numberDecimal"/>
 
+        <!-- Choose Image -->
         <Button
             android:id="@+id/btnChooseImage"
-            android:text="Choose image"
+            android:text="Choose Image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/purple_500"
+            android:textColor="@android:color/white"/>
 
+        <!-- Preview Image -->
         <ImageView
             android:id="@+id/productImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_marginTop="12dp"
             android:scaleType="centerCrop"
-            android:background="#eeeeee"/>
+            android:background="#eeeeee"
+            android:contentDescription="Product Image"
+            android:padding="6dp"/>
 
-        <!-- Spinner for branch selection -->
+        <!-- Branch Spinner -->
         <Spinner
             android:id="@+id/branchSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:prompt="@string/select_branch" />
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/spinner_bg"
+            android:textColor="@color/black"/>
 
+        <!-- Add Button -->
         <Button
             android:id="@+id/btnAdd"
             android:text="Add Product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#3d3c3d"
+            android:textColor="@android:color/white"/>
 
-        <!-- New button to view products -->
+        <!-- View Products Button -->
         <Button
             android:id="@+id/btnViewProducts"
-            android:text="View Products"
+            android:text=" View Products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/black"
+            android:textColor="@android:color/white"/>
+        <!-- Back Button -->
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:backgroundTint="@color/black"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="start"/>
+
     </LinearLayout>
 </ScrollView>

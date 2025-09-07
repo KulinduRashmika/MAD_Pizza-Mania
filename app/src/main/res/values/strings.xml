@@ -4,4 +4,6 @@
     <string name="btnPlaceOrder">PAY</string>
     <string name="title_activity_maps">Maps</string>
 
+    <string name="banner_image">Banner Image</string>
+
 </resources>

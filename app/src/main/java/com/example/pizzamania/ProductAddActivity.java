@@ -81,6 +81,12 @@ public class ProductAddActivity extends AppCompatActivity {
             Intent intent = new Intent(ProductAddActivity.this, ProductList.class);
             startActivity(intent);
         });
+
+        Button btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> {
+            onBackPressed(); // or finish();
+        });
+
     }
 
     private void checkPermissionAndPick() {

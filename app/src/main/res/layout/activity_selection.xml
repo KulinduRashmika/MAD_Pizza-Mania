@@ -5,74 +5,115 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pizza_white"
+    android:background="@drawable/selectback"
     android:padding="24dp"
     tools:context=".Selection">
 
-    <!-- Logo -->
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+    <!-- Logo (circular) -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/logoImage"
+        android:layout_width="158dp"
+        android:layout_height="154dp"
         android:layout_marginTop="40dp"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/app_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@mipmap/ic_new_logo_round"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
-
-    <!-- Admin Button -->
-    <ImageButton
-        android:id="@+id/adminButton"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Admin"
-        app:layout_constraintEnd_toStartOf="@id/customerButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView3"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Admin Text Label -->
-    <TextView
-        android:id="@+id/adminLabel"
+    <!-- Customer Section -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/customerCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Admin"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/adminButton"
-        app:layout_constraintStart_toStartOf="@id/adminButton"
-        app:layout_constraintTop_toBottomOf="@id/adminButton" />
-
-    <!-- Customer Button -->
-    <ImageButton
-        android:id="@+id/customerButton"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Customer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/adminButton"
-        app:layout_constraintTop_toBottomOf="@id/imageView3"
-        app:srcCompat="@mipmap/ic_customer_foreground" />
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        app:layout_constraintTop_toBottomOf="@id/logoImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Customer Text Label -->
-    <TextView
-        android:id="@+id/customerLabel"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/customerButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Customer"
+                app:srcCompat="@mipmap/ic_customer_foreground" />
+
+            <TextView
+                android:id="@+id/customerLabel"
+                android:layout_width="89dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:text="Customers"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Hidden Admin Section -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/adminCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Customer"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/customerButton"
-        app:layout_constraintStart_toStartOf="@id/customerButton"
-        app:layout_constraintTop_toBottomOf="@id/customerButton" />
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        app:layout_constraintTop_toBottomOf="@id/customerCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/adminButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="Admin"
+                app:srcCompat="@mipmap/ic_launcher_foreground" />
+
+            <TextView
+                android:id="@+id/adminLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Arrow Button to Show Admin -->
+    <ImageButton
+        android:id="@+id/toggleAdminButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="64dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Show Admin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customerCard"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@android:drawable/arrow_up_float" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

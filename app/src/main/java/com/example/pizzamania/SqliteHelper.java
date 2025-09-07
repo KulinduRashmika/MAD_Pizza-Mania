@@ -10,7 +10,7 @@ import android.util.Log;
 public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "PizzaMania.db";
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
 
     public SqliteHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

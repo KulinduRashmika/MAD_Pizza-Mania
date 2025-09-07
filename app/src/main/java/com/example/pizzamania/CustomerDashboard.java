@@ -3,72 +3,156 @@ package com.example.pizzamania;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerDashboard extends AppCompatActivity {
 
-    RecyclerView recyclerView;
-    ArrayList<String> productNames, productDescriptions;
-    ArrayList<byte[]> productImages;
-    ArrayList<Double> smallPrices, mediumPrices, largePrices;
-    SqliteHelper dbHelper;
-    Spinner branchSpinner; // add spinner reference
+    // Product RecyclerView
+    private RecyclerView recyclerViewProducts;
+    private ArrayList<String> productNames, productDescriptions;
+    private ArrayList<byte[]> productImages;
+    private ArrayList<Double> smallPrices, mediumPrices, largePrices;
+    private ProductAdapter adapter;
 
     // For search filtering
-    ArrayList<String> allProductNames, allProductDescriptions;
-    ArrayList<byte[]> allProductImages;
-    ArrayList<Double> allSmallPrices, allMediumPrices, allLargePrices;
-    ProductAdapter adapter;
+    private ArrayList<String> allProductNames, allProductDescriptions;
+    private ArrayList<byte[]> allProductImages;
+    private ArrayList<Double> allSmallPrices, allMediumPrices, allLargePrices;
+
+    // Banner RecyclerView
+    private RecyclerView bannerRecyclerView;
+    private int currentBannerPosition = 0;
+    private Handler bannerHandler = new Handler();
+    private Runnable bannerRunnable;
+
+    // Branch Spinner
+    private Spinner branchSpinner;
+
+    // Database helper
+    private SqliteHelper dbHelper;
+
+    // Search bar
+    private EditText searchBar;
+
+    // Bottom navigation
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_dashboard);
 
-        recyclerView = findViewById(R.id.recyclerViewProducts);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // 2 columns
+        // Initialize views
+        recyclerViewProducts = findViewById(R.id.recyclerViewProducts);
+        recyclerViewProducts.setLayoutManager(new GridLayoutManager(this, 2));
+
+        bannerRecyclerView = findViewById(R.id.bannerRecyclerView);
+        bannerRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        );
+
+        branchSpinner = findViewById(R.id.customerBranchSpinner);
+        searchBar = findViewById(R.id.searchBar);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         dbHelper = new SqliteHelper(this);
 
-        branchSpinner = findViewById(R.id.customerBranchSpinner); // initialize spinner
+        // Setup banners
+        setupBanners();
 
         // Setup branch spinner
+        setupBranchSpinner();
+
+        // Setup search bar
+        setupSearchBar();
+
+        // Setup bottom navigation
+        setupBottomNavigation();
+    }
+
+    // Setup banners with auto-scroll
+    private void setupBanners() {
+        List<Banner> bannerList = new ArrayList<>();
+        bannerList.add(new Banner("50% OFF!", R.drawable.offer2));
+        bannerList.add(new Banner("Buy 1 Get 1 Free", R.drawable.offer1));
+        bannerList.add(new Banner("Buy 1 Get 1 Free", R.drawable.offer3));
+        bannerList.add(new Banner("Buy 1 Get 1 Free", R.drawable.offer4));
+        bannerList.add(new Banner("Buy 1 Get 1 Free", R.drawable.offer5));
+        bannerList.add(new Banner("Buy 1 Get 1 Free", R.drawable.offer6));
+
+        BannerAdapter bannerAdapter = new BannerAdapter(this, bannerList);
+        bannerRecyclerView.setAdapter(bannerAdapter);
+
+        // Auto-scroll banners every 5 seconds
+        bannerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (bannerAdapter.getItemCount() == 0) return;
+
+                currentBannerPosition++;
+                if (currentBannerPosition >= bannerAdapter.getItemCount()) {
+                    currentBannerPosition = 0;
+                }
+                bannerRecyclerView.smoothScrollToPosition(currentBannerPosition);
+
+                bannerHandler.postDelayed(this, 4000);
+            }
+        };
+        bannerHandler.postDelayed(bannerRunnable, 4000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bannerHandler != null && bannerRunnable != null) {
+            bannerHandler.removeCallbacks(bannerRunnable);
+        }
+    }
+
+    // Setup branch spinner
+    private void setupBranchSpinner() {
         ArrayAdapter<String> branchAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
                 new String[]{"Colombo", "Galle"});
         branchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         branchSpinner.setAdapter(branchAdapter);
 
-        // Load products for the initially selected branch
+        // Load products for initial branch
         loadProductsByBranch(branchSpinner.getSelectedItem().toString());
+        copyAllProductsForSearch();
 
         branchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String branch = branchSpinner.getSelectedItem().toString();
                 loadProductsByBranch(branch);
-                // Also update search reference
                 copyAllProductsForSearch();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+    }
 
-        EditText searchBar = findViewById(R.id.searchBar);
+    // Setup search bar
+    private void setupSearchBar() {
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -81,37 +165,30 @@ public class CustomerDashboard extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) { }
         });
+    }
 
-        // Bottom navigation bar logic
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                int itemId = item.getItemId();
+    // Setup bottom navigation
+    private void setupBottomNavigation() {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
 
-                if (itemId == R.id.nav_home) {
-                    // Already in home (dashboard)
-                    return true;
-                } else if (itemId == R.id.nav_cart) {
-                    Intent cartIntent = new Intent(CustomerDashboard.this, CartActivity.class);
-                    startActivity(cartIntent);
-                    return true;
-                } else if (itemId == R.id.nav_orders) {
-                    Intent ordersIntent = new Intent(CustomerDashboard.this, Orders.class);
-                    startActivity(ordersIntent);
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    Intent profileIntent = new Intent(CustomerDashboard.this, ProfileActivity.class);
-                    startActivity(profileIntent);
-                    return true;
-                }
-
-                return false;
+            if (itemId == R.id.nav_home) {
+                return true; // Already on dashboard
+            } else if (itemId == R.id.nav_cart) {
+                startActivity(new Intent(CustomerDashboard.this, CartActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_orders) {
+                startActivity(new Intent(CustomerDashboard.this, Orders.class));
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(CustomerDashboard.this, ProfileActivity.class));
+                return true;
             }
+            return false;
         });
     }
 
-    // Load products for selected branch
+    // Load products by branch
     private void loadProductsByBranch(String branch) {
         productNames = new ArrayList<>();
         productDescriptions = new ArrayList<>();
@@ -133,7 +210,6 @@ public class CustomerDashboard extends AppCompatActivity {
             cursor.close();
         }
 
-        // Always create a new adapter with the latest lists
         adapter = new ProductAdapter(
                 this,
                 productNames,
@@ -143,7 +219,7 @@ public class CustomerDashboard extends AppCompatActivity {
                 mediumPrices,
                 largePrices
         );
-        recyclerView.setAdapter(adapter);
+        recyclerViewProducts.setAdapter(adapter);
 
         adapter.setOnItemClickListener(position -> {
             Intent intent = new Intent(CustomerDashboard.this, ProductDetailActivity.class);
@@ -157,7 +233,7 @@ public class CustomerDashboard extends AppCompatActivity {
         });
     }
 
-    // Copy all products for search reference (for current branch)
+    // Copy products for search filtering
     private void copyAllProductsForSearch() {
         allProductNames = new ArrayList<>(productNames);
         allProductDescriptions = new ArrayList<>(productDescriptions);
@@ -167,6 +243,7 @@ public class CustomerDashboard extends AppCompatActivity {
         allLargePrices = new ArrayList<>(largePrices);
     }
 
+    // Filter products based on search query
     private void filterProducts(String query) {
         productNames.clear();
         productDescriptions.clear();
@@ -196,6 +273,7 @@ public class CustomerDashboard extends AppCompatActivity {
                 }
             }
         }
+
         adapter.notifyDataSetChanged();
     }
 }

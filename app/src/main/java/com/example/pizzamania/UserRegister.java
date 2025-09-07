@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ public class UserRegister extends AppCompatActivity {
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etAddress = findViewById(R.id.etAddress);
-        etPhone = findViewById(R.id.etPhone); // <-- add this line
+        etPhone = findViewById(R.id.etPhone);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnRegister = findViewById(R.id.btnRegister);
@@ -54,7 +55,7 @@ public class UserRegister extends AppCompatActivity {
         String name = etName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim(); // <-- get phone
+        String phone = etPhone.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
@@ -67,12 +68,22 @@ public class UserRegister extends AppCompatActivity {
             etEmail.setError("Enter your email");
             return;
         }
+        // Email validation
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            etEmail.setError("Enter a valid email address");
+            return;
+        }
         if (TextUtils.isEmpty(address)) {
             etAddress.setError("Enter your address");
             return;
         }
         if (TextUtils.isEmpty(phone)) {
             etPhone.setError("Enter your phone number");
+            return;
+        }
+        // Phone validation (10 digits)
+        if (!phone.matches("^[0-9]{10}$")) {
+            etPhone.setError("Enter a valid 10-digit phone number");
             return;
         }
         if (TextUtils.isEmpty(password)) {
@@ -91,7 +102,7 @@ public class UserRegister extends AppCompatActivity {
         values.put("email", email);
         values.put("password", password);
         values.put("address", address);
-        values.put("phone", phone); // <-- save phone
+        values.put("phone", phone);
 
         long result = db.insert("customer", null, values);
         if (result != -1) {

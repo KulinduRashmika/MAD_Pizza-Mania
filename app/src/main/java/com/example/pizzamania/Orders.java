@@ -8,11 +8,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -21,24 +22,30 @@ import java.util.ArrayList;
 public class Orders extends AppCompatActivity {
 
     SqliteHelper dbHelper;
-    ListView listViewOrders;
+    RecyclerView recyclerViewOrders;
+    OrderAdapterView orderAdapter;
     Spinner spinnerStatus;
     String sessionEmail;
+    ArrayList<String> ordersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
 
-        listViewOrders = findViewById(R.id.listViewOrders);
-        spinnerStatus = findViewById(R.id.spinnerStatus); // Add Spinner in XML
+        recyclerViewOrders = findViewById(R.id.recyclerViewOrders);
+        recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
+        ordersList = new ArrayList<>();
+        orderAdapter = new OrderAdapterView(ordersList);
+        recyclerViewOrders.setAdapter(orderAdapter);
+
+        spinnerStatus = findViewById(R.id.spinnerStatus);
         dbHelper = new SqliteHelper(this);
 
-        // Get logged-in customer email from session
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         sessionEmail = sharedPreferences.getString("email", null);
 
-        // ------------------ Spinner Setup ------------------
+        // Spinner setup
         String[] statusOptions = {"All", "Pending", "In Progress", "Delivered", "Cancelled"};
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, statusOptions);
@@ -56,7 +63,7 @@ public class Orders extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
-        // Setup bottom navigation
+        // Bottom navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
@@ -75,14 +82,11 @@ public class Orders extends AppCompatActivity {
                     startActivity(new Intent(Orders.this, ProfileActivity.class));
                     return true;
                 }
-
                 return false;
             }
         });
-
         bottomNavigationView.setSelectedItemId(R.id.nav_orders);
 
-        // Load default orders (All)
         spinnerStatus.setSelection(0);
     }
 
@@ -94,12 +98,12 @@ public class Orders extends AppCompatActivity {
             cursorCustomer.close();
         }
 
-        ArrayList<String> ordersList = new ArrayList<>();
+        ordersList.clear();
         Cursor cursor;
         if (status.equals("All")) {
             cursor = dbHelper.getOrdersByCustomer(customerId);
         } else {
-            cursor = dbHelper.getOrdersByCustomerAndStatus(customerId, status); // Need to add this in SQLiteHelper
+            cursor = dbHelper.getOrdersByCustomerAndStatus(customerId, status);
         }
 
         if (cursor != null) {
@@ -117,20 +121,18 @@ public class Orders extends AppCompatActivity {
                                 "\nItems: " + cursor.getString(cursor.getColumnIndexOrThrow("items")) +
                                 "\nTotal: Rs. " + cursor.getDouble(cursor.getColumnIndexOrThrow("totalPrice")) +
                                 "\nDate: " + cursor.getString(cursor.getColumnIndexOrThrow("orderDate")) +
-                                "\nStatus: " + displayStatus +
-                                "\n\n👤 Customer Details:" +
-                                "\nName: " + cursor.getString(cursor.getColumnIndexOrThrow("customer_name")) +
+                                "\n" + displayStatus +
+                                "\nCustomer: " + cursor.getString(cursor.getColumnIndexOrThrow("customer_name")) +
                                 "\nEmail: " + cursor.getString(cursor.getColumnIndexOrThrow("email")) +
                                 "\nPhone: " + cursor.getString(cursor.getColumnIndexOrThrow("phone")) +
                                 "\nAddress: " + cursor.getString(cursor.getColumnIndexOrThrow("address"));
+
                 ordersList.add(orderInfo);
             }
             cursor.close();
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, ordersList);
-        listViewOrders.setAdapter(adapter);
+        orderAdapter.notifyDataSetChanged();
     }
 
     @Override

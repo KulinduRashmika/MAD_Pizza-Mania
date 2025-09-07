@@ -1,34 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/backkuli"
+    tools:context=".CustomerDashboardActivity">
 
-    <!-- Title -->
-    <TextView
+    <!-- Top Title Bar with Logo -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pizza Mania"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="16dp"
         android:background="#FFFFFF"
-        android:elevation="4dp"/>
+        android:elevation="4dp"
+        android:padding="12dp">
 
-    <!-- 🔎 Search Bar -->
+        <!-- App Title -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pizza Mania"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
+
+        <!-- Circular Logo -->
+        <!-- Small circular logo in top bar -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/logoSmall"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_new_logo_round"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
+
+
+    </RelativeLayout>
+
+    <!-- Search Bar -->
     <EditText
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:hint="Search products..."
-        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:drawableStart="@android:drawable/ic_menu_search"
         android:padding="12dp"
         android:background="@drawable/search_bar_bg"
         android:layout_margin="12dp"
-        android:elevation="2dp"/>
+        android:elevation="2dp" />
 
-    <!-- Spinner for Branch Selection -->
+    <!-- Banner RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bannerRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="none"
+        android:overScrollMode="never" />
+
+    <!-- Branch Selection Spinner -->
     <Spinner
         android:id="@+id/customerBranchSpinner"
         android:layout_width="match_parent"
@@ -36,13 +73,13 @@
         android:layout_margin="12dp"
         android:prompt="@string/select_branch" />
 
-    <!-- RecyclerView (Product List) -->
+    <!-- Product List RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="8dp" />
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -53,6 +90,6 @@
         app:itemIconTint="@null"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>
