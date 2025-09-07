@@ -9,30 +9,25 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AdminDashboard extends AppCompatActivity {
 
-    Button btnAddProduct, btnViewCustomers;
+    Button btnAddProduct, btnViewProducts, btnViewOrders, btnUpdateDelivery, btnViewDeliveries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_dashboard);
+        setContentView(R.layout.activity_admin_dashboard); // layout file must be saved correctly
 
+        // Bind views
         btnAddProduct = findViewById(R.id.btnAddProduct);
-        btnViewCustomers = findViewById(R.id.btnViewCustomers);
+        btnViewProducts = findViewById(R.id.btnViewProducts);
+        btnViewOrders = findViewById(R.id.btnViewOrders);
+        btnUpdateDelivery = findViewById(R.id.btnUpdateDelivery);
+        btnViewDeliveries = findViewById(R.id.btnViewDeliveries);
 
-        // Navigate to Add Product
-        btnAddProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(AdminDashboard.this, ProductAddActivity.class));
-            }
-        });
-
-        // Navigate to Customer List (optional, if you want)
-        btnViewCustomers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Add your CustomerListActivity later
-            }
-        });
+        // Button actions
+        btnAddProduct.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ProductAddActivity.class)));
+        btnViewProducts.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ProductList.class)));
+//        btnViewOrders.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ViewOrdersActivity.class)));
+//        btnUpdateDelivery.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, UpdateDeliveryActivity.class)));
+//        btnViewDeliveries.setOnClickListener(v -> startActivity(new Intent(AdminDashboard.this, ViewDeliveriesActivity.class)));
     }
 }

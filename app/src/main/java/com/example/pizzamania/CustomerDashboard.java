@@ -97,7 +97,7 @@ public class CustomerDashboard extends AppCompatActivity {
                     startActivity(cartIntent);
                     return true;
                 } else if (itemId == R.id.nav_orders) {
-                    Intent ordersIntent = new Intent(CustomerDashboard.this, OrdersActivity.class);
+                    Intent ordersIntent = new Intent(CustomerDashboard.this, Orders.class);
                     startActivity(ordersIntent);
                     return true;
                 } else if (itemId == R.id.nav_profile) {

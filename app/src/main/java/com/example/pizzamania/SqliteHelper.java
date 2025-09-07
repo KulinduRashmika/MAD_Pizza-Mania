@@ -56,6 +56,17 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(customer_ID) REFERENCES customer(customer_ID), " +
                 "FOREIGN KEY(product_ID) REFERENCES product(product_ID))";
         db.execSQL(cartTable);
+        // ---------------- Orders ----------------
+        String ordersTable = "CREATE TABLE orders (" +
+                "order_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "customer_ID INTEGER, " +
+                "items TEXT, " +
+                "totalPrice REAL, " +
+                "orderDate TEXT, " +
+                "status TEXT, " +
+                "FOREIGN KEY(customer_ID) REFERENCES customer(customer_ID))";
+        db.execSQL(ordersTable);
+
     }
 
     @Override
@@ -64,6 +75,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS admin");
         db.execSQL("DROP TABLE IF EXISTS product");
         db.execSQL("DROP TABLE IF EXISTS cart");
+        db.execSQL("DROP TABLE IF EXISTS orders");
         onCreate(db);
     }
 
@@ -214,4 +226,35 @@ public class SqliteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("cart", "customer_ID=?", new String[]{String.valueOf(customerId)});
     }
+    public int deleteCartItem(int cartId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("cart", "cart_ID=?", new String[]{String.valueOf(cartId)});
+    }
+    // Save order
+    public long insertOrder(int customerId, String items, double totalPrice, String date, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("customer_ID", customerId);
+        values.put("items", items);
+        values.put("totalPrice", totalPrice);
+        values.put("orderDate", date);
+        values.put("status", status);
+        return db.insert("orders", null, values);
+    }
+
+    // Get all orders of a customer
+    public Cursor getOrdersByCustomer(int customerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM orders WHERE customer_ID=? ORDER BY orderDate DESC",
+                new String[]{String.valueOf(customerId)});
+    }
+
+    // Update order status by order ID
+    public int updateOrderStatus(long orderId, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("status", status);
+        return db.update("orders", values, "order_ID=?", new String[]{String.valueOf(orderId)});
+    }
+
 }

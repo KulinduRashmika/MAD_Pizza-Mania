@@ -30,38 +30,59 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private static final String TAG = "PayHere Demo";
 
-    private TextView textView;
-
-
-    private final ActivityResultLauncher<Intent> peyherelauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult() ,
-            result ->{
-                if(result.getResultCode() == Activity.RESULT_OK && result.getData() != null){
-                    Intent  data = result.getData();
-                    if (data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
-                        Serializable serializable = data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
-                        if (serializable instanceof PHResponse) {
-                            PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) serializable;
-                            String msg = response.isSuccess() ? "Payment Success: " + response.getData() : "Payment Failed" +response;
-                            Log.d(TAG, msg);
-                            textView.setText(msg);
-                        }
-                    }
-                }
-                else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-                    textView.setText("User Cancelled the payment");
-                }
-            }
-    );
-
     TextView txtCustomerName, txtCustomerPhone, txtCustomerAddress, txtTotalPrice;
     ListView listViewCheckout;
     Button btnPlaceOrder, btnCancel;
 
-
     CartAdapter adapter;
     SqliteHelper dbHelper;
     String sessionEmail;
+    long currentOrderId = -1; // To track the last inserted order
+
+    // PayHere launcher
+    private final ActivityResultLauncher<Intent> payHereLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    if (data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
+                        Serializable serializable = data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
+                        if (serializable instanceof PHResponse) {
+                            PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) serializable;
+                            if (response.isSuccess()) {
+                                Log.d(TAG, "✅ Payment Success: " + response.getData());
+                                Toast.makeText(this, "Payment Successful!", Toast.LENGTH_LONG).show();
+
+                                // Update order status -> Paid
+                                if (currentOrderId != -1) {
+                                    dbHelper.updateOrderStatus(currentOrderId, "Paid");
+                                }
+
+                                // Clear cart
+                                CartManager.getInstance().clearCart();
+                                adapter.notifyDataSetChanged();
+
+                                // Go to Orders page
+                                startActivity(new Intent(CheckoutActivity.this, Orders.class));
+                                finish();
+                            } else {
+                                Log.d(TAG, "❌ Payment Failed: " + response);
+                                Toast.makeText(this, "Payment Failed!", Toast.LENGTH_LONG).show();
+
+                                if (currentOrderId != -1) {
+                                    dbHelper.updateOrderStatus(currentOrderId, "Failed");
+                                }
+                            }
+                        }
+                    }
+                } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                    Toast.makeText(this, "⚠ User Cancelled the payment", Toast.LENGTH_LONG).show();
+                    if (currentOrderId != -1) {
+                        dbHelper.updateOrderStatus(currentOrderId, "Cancelled");
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,15 +104,15 @@ public class CheckoutActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         sessionEmail = sharedPreferences.getString("email", null);
 
-        // Load customer info (read-only)
+        // Load customer info
         loadCustomerInfo(sessionEmail);
 
-        // Show cart items (read-only, no quantity change)
+        // Show cart items in read-only mode
         adapter = new CartAdapter(this, CartManager.getInstance().getCartItems()) {
             @Override
             public View getView(int position, View convertView, android.view.ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                // Hide increase/decrease/remove buttons in checkout
+                // Hide increase/decrease/remove buttons
                 View btnIncrease = view.findViewById(R.id.btnIncrease);
                 View btnDecrease = view.findViewById(R.id.btnDecrease);
                 View btnRemove = view.findViewById(R.id.btnRemove);
@@ -106,74 +127,76 @@ public class CheckoutActivity extends AppCompatActivity {
         // Show total price
         txtTotalPrice.setText("Total: Rs. " + CartManager.getInstance().getTotalPrice());
 
-        // Place Order
-        btnPlaceOrder.setOnClickListener(v -> {
-            if (CartManager.getInstance().getCartItems().isEmpty()) {
-                Toast.makeText(this, "Cart is empty!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Toast.makeText(this, "✅ Order placed successfully!", Toast.LENGTH_LONG).show();
-
-            // Clear cart
-            CartManager.getInstance().clearCart();
-            adapter.notifyDataSetChanged();
-
-            // Go to payment gateway
-            Intent intent = new Intent(CheckoutActivity.this, PaymentGatewayActivity.class);
-            intent.putExtra("customerName", txtCustomerName.getText().toString());
-            intent.putExtra("customerPhone", txtCustomerPhone.getText().toString());
-            intent.putExtra("customerAddress", txtCustomerAddress.getText().toString());
-            intent.putExtra("totalPrice", CartManager.getInstance().getTotalPrice());
-            startActivity(intent);
-            finish();
-        });
+        // Place Order button
+        btnPlaceOrder.setOnClickListener(v -> placeOrder());
 
         // Cancel button
-        btnCancel.setOnClickListener(v -> {
-            finish(); // just close checkout
-        });
-        Button pay_button = findViewById(R.id.btnPlaceOrder);
-        //textView = findViewById(R.id.textView);
-
-        pay_button.setOnClickListener(view -> initiatepayment());
+        btnCancel.setOnClickListener(v -> finish());
     }
 
-        private void initiatepayment() {
-
-            InitRequest req = new InitRequest();
-            req.setMerchantId("1231912");       // Merchant ID
-            req.setCurrency("LKR");             // Currency code LKR/USD/GBP/EUR/AUD
-            req.setAmount(1000.00);             // Final Amount to be charged
-            req.setOrderId("230000123");        // Unique Reference ID
-            req.setItemsDescription("Door bell wireless");  // Item description title
-            req.setCustom1("This is the custom message 1");
-            req.setCustom2("This is the custom message 2");
-            req.getCustomer().setFirstName("Saman");
-            req.getCustomer().setLastName("Perera");
-            req.getCustomer().setEmail("kalpamihiranga957@gmail.com");
-            req.getCustomer().setPhone("+94740662500");
-            req.getCustomer().getAddress().setAddress("No.1, Galle Road");
-            req.getCustomer().getAddress().setCity("Colombo");
-            req.getCustomer().getAddress().setCountry("Sri Lanka");
-
-//Optional Params
-            // Notifiy Url
-            req.getCustomer().getDeliveryAddress().setAddress("No.2, Kandy Road");
-            req.getCustomer().getDeliveryAddress().setCity("Kadawatha");
-            req.getCustomer().getDeliveryAddress().setCountry("Sri Lanka");
-            req.getItems().add(new Item(null, "Door bell wireless", 1, 1000.0));
-
-            req.setNotifyUrl(" ");
-
-            Intent intent = new Intent(this, PHMainActivity.class);
-            intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
-            PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
-            // startActivityForResult(intent, PAYHERE_REQUEST); //unique request ID e.g. "11001"
-            peyherelauncher.launch(intent);
-
+    private void placeOrder() {
+        if (CartManager.getInstance().getCartItems().isEmpty()) {
+            Toast.makeText(this, "Cart is empty!", Toast.LENGTH_SHORT).show();
+            return;
         }
 
+        // Get customer ID
+        Cursor cursor = dbHelper.getCustomerByEmail(sessionEmail);
+        int customerId = -1;
+        if (cursor != null && cursor.moveToFirst()) {
+            customerId = cursor.getInt(cursor.getColumnIndexOrThrow("customer_ID"));
+            cursor.close();
+        }
+
+        // Build items summary
+        StringBuilder itemsSummary = new StringBuilder();
+        for (CartItem item : CartManager.getInstance().getCartItems()) {
+            itemsSummary.append(item.getName()).append(" x").append(item.getQuantity()).append(", ");
+        }
+
+        // Insert order into DB with Pending status
+        double totalPrice = CartManager.getInstance().getTotalPrice();
+        String date = java.text.DateFormat.getDateTimeInstance().format(new java.util.Date());
+        currentOrderId = dbHelper.insertOrder(customerId, itemsSummary.toString(), totalPrice, date, "Pending");
+
+        if (currentOrderId != -1) {
+            Toast.makeText(this, "✅ Order saved successfully!", Toast.LENGTH_LONG).show();
+            initiatePayment(totalPrice); // Proceed to PayHere
+        } else {
+            Toast.makeText(this, "❌ Failed to save order!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void initiatePayment(double amount) {
+        InitRequest req = new InitRequest();
+        req.setMerchantId("1231912");       // Your Merchant ID
+        req.setCurrency("LKR");
+        req.setAmount(amount);
+        req.setOrderId("ORDER-" + System.currentTimeMillis()); // Unique order ID
+        req.setItemsDescription("PizzaMania Order");
+        req.setCustom1("Customer Email: " + sessionEmail);
+
+        // Customer details
+        req.getCustomer().setFirstName("Pizza");
+        req.getCustomer().setLastName("Customer");
+        req.getCustomer().setEmail("demo@email.com");
+        req.getCustomer().setPhone("+94740000000");
+        req.getCustomer().getAddress().setAddress("Default Address");
+        req.getCustomer().getAddress().setCity("Colombo");
+        req.getCustomer().getAddress().setCountry("Sri Lanka");
+
+        // Add cart items
+        for (CartItem item : CartManager.getInstance().getCartItems()) {
+            req.getItems().add(new Item(null, item.getName(), item.getQuantity(), item.getPrice()));
+        }
+
+        req.setNotifyUrl(" "); // Optional: backend listener
+
+        Intent intent = new Intent(this, PHMainActivity.class);
+        intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
+        PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
+        payHereLauncher.launch(intent);
+    }
 
     private void loadCustomerInfo(String email) {
         Cursor cursor = dbHelper.getCustomerByEmail(email);

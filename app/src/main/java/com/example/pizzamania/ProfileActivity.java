@@ -60,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(cartIntent);
                 return true;
             } else if (itemId == R.id.nav_orders) {
-                Intent ordersIntent = new Intent(ProfileActivity.this, OrdersActivity.class);
+                Intent ordersIntent = new Intent(ProfileActivity.this, Orders.class);
                 startActivity(ordersIntent);
                 return true;
             } else if (itemId == R.id.nav_profile) {

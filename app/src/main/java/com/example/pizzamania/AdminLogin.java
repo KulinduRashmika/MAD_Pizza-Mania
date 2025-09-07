@@ -38,7 +38,7 @@ public class AdminLogin extends AppCompatActivity {
 
             if (e.equals(ADMIN_EMAIL) && p.equals(ADMIN_PASSWORD)) {
                 // open product add screen
-                startActivity(new Intent(AdminLogin.this, ProductAddActivity.class));
+                startActivity(new Intent(AdminLogin.this, AdminDashboard.class));
                 finish();
             } else {
                 Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show();

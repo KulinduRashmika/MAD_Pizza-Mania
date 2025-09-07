@@ -1,21 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:gravity="center">
+    android:background="#F9F9F9"
+    android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnAddProduct"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Product"
-        android:layout_marginBottom="16dp"/>
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/btnViewCustomers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="View Customers"/>
-</LinearLayout>
+        <!-- Header -->
+        <TextView
+            android:id="@+id/txtAdminTitle"
+            android:text="Admin Dashboard"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginBottom="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!-- Add Product -->
+        <Button
+            android:id="@+id/btnAddProduct"
+            android:text="➕ Add Product"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- View Products -->
+        <Button
+            android:id="@+id/btnViewProducts"
+            android:text="👀 View Products"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- View Orders -->
+        <Button
+            android:id="@+id/btnViewOrders"
+            android:text="📦 View Orders"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FF9800"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Update Delivery -->
+        <Button
+            android:id="@+id/btnUpdateDelivery"
+            android:text="🚚 Update Delivery"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#9C27B0"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- View Deliveries -->
+        <Button
+            android:id="@+id/btnViewDeliveries"
+            android:text="📋 View Delivery Orders"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#607D8B"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+    </LinearLayout>
+</ScrollView>
