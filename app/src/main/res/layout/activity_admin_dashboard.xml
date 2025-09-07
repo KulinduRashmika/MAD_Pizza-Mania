@@ -55,21 +55,21 @@
             android:textColor="#FFFFFF"
             android:layout_marginBottom="12dp"/>
 
-        <!-- Update Delivery -->
-        <Button
-            android:id="@+id/btnUpdateDelivery"
-            android:text="🚚 Update Delivery"
-            android:textAllCaps="false"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#9C27B0"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+        <!-- View Deliveries (optional feature hook) -->
+<!--        <Button-->
+<!--            android:id="@+id/btnViewDeliveries"-->
+<!--            android:text="🚚 View Deliveries"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTint="#9C27B0"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:layout_marginBottom="12dp"/>-->
 
-        <!-- View Deliveries -->
+        <!-- Show Map -->
         <Button
-            android:id="@+id/btnViewDeliveries"
-            android:text="📋 View Delivery Orders"
+            android:id="@+id/showMap"
+            android:text="📍 Show Locations (Map)"
             android:textAllCaps="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,5 +77,14 @@
             android:textColor="#FFFFFF"
             android:layout_marginBottom="12dp"/>
 
+        <!-- Logout -->
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 </ScrollView>

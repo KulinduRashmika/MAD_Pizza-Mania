@@ -2,5 +2,6 @@
     <string name="app_name">PizzaMania</string>
     <string name="select_branch">Select Branch</string>
     <string name="btnPlaceOrder">PAY</string>
+    <string name="title_activity_maps">Maps</string>
 
 </resources>
