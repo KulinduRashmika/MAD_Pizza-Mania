@@ -18,6 +18,10 @@
         android:theme="@style/Theme.PizzaMania"
         tools:targetApi="31">
         <activity
+            android:name=".UpdateOrderStatusActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".AdminOrdersActivity"
             android:exported="false" />
         <!-- Customer Activities -->

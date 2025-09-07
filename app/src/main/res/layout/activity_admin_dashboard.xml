@@ -55,21 +55,21 @@
             android:textColor="#FFFFFF"
             android:layout_marginBottom="12dp"/>
 
-        <!-- Update Delivery -->
         <Button
-            android:id="@+id/btnUpdateDelivery"
-            android:text="🚚 Update Delivery"
-            android:textAllCaps="false"
+            android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#9C27B0"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="12dp"/>
+            android:text="Logout"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#D32F2F"
+            android:textColor="#FFFFFF"/>
+
+
 
         <!-- View Deliveries -->
         <Button
             android:id="@+id/btnViewDeliveries"
-            android:text="📋 View Delivery Orders"
+            android:text="📋 Show Locations"
             android:textAllCaps="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

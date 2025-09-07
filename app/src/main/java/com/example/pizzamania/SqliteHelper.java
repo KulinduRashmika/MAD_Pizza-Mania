@@ -233,9 +233,17 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     public Cursor getOrdersByCustomer(int customerId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM orders WHERE customer_ID=? ORDER BY orderDate DESC",
-                new String[]{String.valueOf(customerId)});
+        return db.rawQuery(
+                "SELECT o.order_ID, o.items, o.totalPrice, o.orderDate, o.status, " +
+                        "c.customer_name, c.email, c.phone, c.address " +
+                        "FROM orders o " +
+                        "JOIN customer c ON o.customer_ID = c.customer_ID " +
+                        "WHERE o.customer_ID=? " +
+                        "ORDER BY o.orderDate DESC",
+                new String[]{String.valueOf(customerId)}
+        );
     }
+
 
     public int updateOrderStatus(long orderId, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -246,12 +254,63 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public Cursor getAllOrders() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery(
-                "SELECT o.order_ID AS _id, c.customer_name, o.items, o.totalPrice, o.orderDate, o.status " +
+                "SELECT o.order_ID AS _id, " +
+                        "c.customer_name, " +
+                        "c.email, " +
+                        "c.phone, " +
+                        "c.address, " +
+                        "o.items, " +
+                        "o.totalPrice, " +
+                        "o.orderDate, " +
+                        "o.status " +
                         "FROM orders o " +
                         "JOIN customer c ON o.customer_ID = c.customer_ID " +
                         "ORDER BY o.orderDate DESC",
                 null
         );
     }
+    // ---------------- Orders ----------------
+    public Cursor getOrdersByStatus(String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT o.order_ID AS _id, " +
+                        "c.customer_name, " +
+                        "c.email, " +
+                        "c.phone, " +
+                        "c.address, " +
+                        "o.items, " +
+                        "o.totalPrice, " +
+                        "o.orderDate, " +
+                        "o.status " +
+                        "FROM orders o " +
+                        "JOIN customer c ON o.customer_ID = c.customer_ID " +
+                        "WHERE o.status=? " +
+                        "ORDER BY o.orderDate DESC",
+                new String[]{status}
+        );
+    }
+
+    public boolean updateOrderStatus(int orderId, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("status", status);
+        int rows = db.update("orders", values, "order_ID=?", new String[]{String.valueOf(orderId)});
+        db.close();
+        return rows > 0;
+    }
+    public Cursor getOrdersByCustomerAndStatus(int customerId, String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT o.order_ID, o.items, o.totalPrice, o.orderDate, o.status, " +
+                        "c.customer_name, c.email, c.phone, c.address " +
+                        "FROM orders o " +
+                        "JOIN customer c ON o.customer_ID = c.customer_ID " +
+                        "WHERE o.customer_ID=? AND o.status=? " +
+                        "ORDER BY o.orderDate DESC",
+                new String[]{String.valueOf(customerId), status});
+    }
+
+
+
 
 }
